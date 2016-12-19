@@ -1,0 +1,97 @@
+#!/bin/sh
+
+source $XDG_CONFIG_HOME/panel/config
+source $XDG_CONFIG_HOME/panel/colors
+
+panel_workspaces() {
+	desktop=1
+	ws=""
+	IFS=':' read -a array <<< $(bspc wm --get-status)
+	for item in "${array[@]}"
+	do
+		name=${item#?}
+		if [ "$item" == "LT" ]
+		then
+			ws="${ws}%{S+}"
+		else
+			desk=""
+			case $item in
+				O*) # focused occupied
+					desk=" 🞊"
+				;;
+				F*) # focused free
+					desk=" 🞊"
+				;;
+				U*) # focused urgent
+					desk=" 🞊"
+				;;
+				o*) # occupied
+					desk=" 🞅"
+				;;
+				f*) # free
+					desk=" 🞅"
+				;;
+				u*) # urgent
+					desk=" 🞅"
+				;;
+			esac
+			shift
+			if [ "$desk" != "" ]
+			then
+				ws="${ws}%{A:bspc desktop -f ^$desktop:}${desk}%{A}"
+				desktop=$((desktop+1))
+			fi
+		fi
+	done
+	ws="${ws}${S0}"
+	echo "${ws}"
+}
+
+panel_title() {
+	echo "$(xtitle)"
+}
+
+panel_sound() {
+	volume=$(amixer -q | grep -A5 Master | grep '%' | cut -d'[' -f2 | cut -d'%' -f1)
+	if [ "$volume" == "0" ]
+	then
+		icon="🔇" #Mute
+	elif ((0 < volume && volume <= 33))
+	then
+		icon="🔈" #No Soundbar
+	elif ((33 < volume && volume <= 66))
+	then
+		icon="🔉" #One Soundbar
+	else
+		icon="🔊" #Three Soundbars
+	fi	
+	echo "%{A4:amixer set Master 10%+ > /dev/null:}%{A5:amixer set Master 10%- > /dev/null:}%{A:$XDG_CONFIG_HOME/panel/popup_sound &:} $icon %{A}%{A}%{A}"
+}
+
+panel_hostname() {
+	echo "%{A:$XDG_CONFIG_HOME/panel/popup_power &:} $(hostname) %{A}"
+}
+
+panel_battery() {
+	online="$(cat /sys/class/power_supply/AC0/online)"
+	if [ "$online" == "0" ]
+	then
+		percentage=$(cat /sys/class/power_supply/BAT0/capacity)
+		echo "${percentage}%🔋"
+	else
+		echo "🔌 "
+	fi
+}
+
+panel_clock() {
+	echo "%{A:$XDG_CONFIG_HOME/panel/popup_cal &:} $(date +'%a %-I:%M %p') %{A}"
+}
+
+# print to panel
+
+while [ "$(pidof bspwm)" != "" ]; do
+	echo "%{l}$(panel_workspaces)" \
+			 "%{c}$(panel_title)" \
+			 "%{Sl}%{r}$(panel_sound)$(panel_hostname)$(panel_clock)$(panel_battery)"
+	sleep 0.1s
+done

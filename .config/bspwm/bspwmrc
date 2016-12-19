@@ -1,0 +1,55 @@
+#! /bin/sh
+
+xsetroot -cursor_name left_ptr &
+
+sxhkd &
+
+bspc config focus_follows_pointer true
+bspc config click_to_focus true
+
+bspc config border_width        0
+bspc config window_gap         20
+
+bspc config top_padding			20
+bspc config right_padding		5
+bspc config bottom_padding	5
+bspc config left_padding		5
+
+bspc config split_ratio         0.50
+
+bspc config borderless_monocle  true
+bspc config gapless_monocle     true
+bspc config focus_by_distance   true
+
+bspc config presel_feedback_color "#202020"
+
+bspc rule -a Midori state=tiled #defaults to floating for some reason
+
+bspc monitor LVDS -d o o o o o
+
+feh --bg-scale ~/Pictures/wallpaper/current.jpg
+
+$XDG_CONFIG_HOME/panel/panel &
+
+twmnd &
+
+#mpd .config/mpd/mpd.conf
+#mpDris2 &
+
+#trayer --height 25 --width 3840 --edge top --transparent true --alpha 52 --tint 0xf3f3f3 --SetDockType false &
+
+compton --config ~/.compton.conf &
+
+/usr/lib/mate-polkit/polkit-mate-authentication-agent-1&
+
+#windows=()
+#while [ "${#windows[@]}" -lt 2 ]
+#do
+#	read -a windows <<< $(xdotool search --class trayer)
+#done
+#for window in "${windows[@]}"
+#do
+#	xdotool windowmove $window 0 -25
+#done
+
+#padevswitch
