@@ -3,7 +3,7 @@
 All the important dotfiles for my netbook setup.
 
 Screenshot:
-![Image](https://github.com/freundTech/dotfiles-desktop/raw/master/screenFetch-current.png)
+![Image](https://github.com/freundTech/dotfiles-netbook/raw/master/screenFetch-current.png)
 
 GTK Theme: MonArc (https://github.com/freundTech/MonArc-theme)  
 Icon Theme: paper-icon-theme-grayscale (https://github.com/freundTech/paper-icon-theme-grayscale)  
